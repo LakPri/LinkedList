@@ -1,0 +1,52 @@
+//: Playground - noun: a place where people can play
+
+import UIKit
+
+enum  language {
+    case en
+    case fr
+    case nl
+    case de
+}
+
+func formatAmountForRegion(number: Double , region: language , currency: String) -> String {
+
+    
+    var myString = String(format: "%.2f", number)
+    
+    var separator = "$1 "
+    
+    // Set up separator + transformations
+    switch region {
+        case .en:
+            separator = "$1."
+            myString = myString.replacingOccurrences(of: ".", with: ",")
+        default:
+            separator = "$1 "
+    }
+    
+    //Parser Input
+    let regexPattern = "(\\d)(?=(\\d{3})+(?!\\d))"
+    let regex = try! NSRegularExpression(pattern: regexPattern,
+                                         options: .caseInsensitive)
+
+    let range = NSMakeRange(0, myString.count)
+
+    //Generate Output
+    return regex.stringByReplacingMatches(in: myString, options: [], range: range, withTemplate: separator) + " " + currency
+}
+
+let value = 10569900.23
+
+print("Input:  " + String(value))
+
+print("Output NL: "  + formatAmountForRegion(number:value , region: language.nl , currency:"EUR"))
+print("Output FR: "  + formatAmountForRegion(number:value , region: language.fr , currency:"EUR"))
+print("Output DE: "  + formatAmountForRegion(number:value , region: language.de , currency:"EUR"))
+print("Output EN: "  + formatAmountForRegion(number:value , region: language.en , currency:"EUR"))
+
+
+
+
+
+
